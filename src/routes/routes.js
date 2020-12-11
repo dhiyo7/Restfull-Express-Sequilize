@@ -3,11 +3,15 @@ const {
   createArticle,
   updatedArticle,
   deleteArticle,
-  detailArticle
+  detailArticle,
 } = require("../controllers/Articles");
 module.exports = (app) => {
   app.get("/", (_, res) => {
-    res.json({ message: "Restful API Sequelize Mysql" });
+    res.json({
+      Welcome: "Selamat Datang Di Articles API | Untuk penggunaan API silahkan kunjungi link di bawah",
+      Dokumentasi: "https://documenter.getpostman.com/view/6626576/TVmV7Ziy",
+      Repository: "https://github.com/dhiyo7/Restfull-Express-Sequilize",
+    });
   });
 
   app.get("/articles", articles);
