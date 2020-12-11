@@ -5,7 +5,11 @@ const response = require("../../src/helpers/utils");
 
 exports.articles = async (_, res) => {
   const data = await article.article
-    .findAll({ attributes: ["id", "tittle", "description"] })
+    .findAll({
+      where: { status: true },
+      attributes: ["id", "tittle", "description", "views", "status"],
+      order: [["createdAt", "DESC"]],
+    })
     .then((result) => result)
     .catch((err) => {
       res.status(500);
@@ -35,11 +39,11 @@ exports.createArticle = (req, res) => {
 
 exports.updatedArticle = (req, res) => {
   const { id } = req.params;
-  const { tittle, description } = req.body;
+  const { tittle, description, status } = req.body;
 
   article.article
     .update(
-      { tittle, description },
+      { tittle, description, status },
       {
         where: { id },
       }
@@ -86,15 +90,16 @@ exports.detailArticle = async (req, res) => {
   const { id } = req.params;
 
   const getById = await article.article
-    .findOne({ where: { id } })
+    .findOne({ where: { id }, raw: true })
     .then((result) => result)
     .catch((err) => {
       err;
     });
-    if(getById) {
-      response.success(" Data Success", getById, res);
-    } else {
-      res.status(404)
-      response.failed(" Data Not Found", undefined, res);
-    }
+  if (getById) {
+    article.article.update({ views: +getById.views + 1 }, { where: { id } });
+    response.success(" Data Success", getById, res);
+  } else {
+    res.status(404);
+    response.failed(" Data Not Found", undefined, res);
+  }
 };
