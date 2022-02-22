@@ -1,4 +1,5 @@
-require('dotenv').config();
+require("dotenv").config({ silent: "production" });
+// require('dotenv').config();
 
 module.exports = {
   development: {
